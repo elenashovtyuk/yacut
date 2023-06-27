@@ -37,4 +37,4 @@ db = SQLAlchemy(app)
 
 # остальные импорты модулей укажем в конце файла,
 # так как они будут созданы уже на базе созданного экземпляра приложения
-from . import error_handlers, views
+from . import error_handlers, views, models
