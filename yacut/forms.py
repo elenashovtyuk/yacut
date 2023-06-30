@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 
 # типы полей формы и валидаторы импортируем из библиотеки WTForms
 from wtforms import SubmitField, URLField, StringField
-from wtforms.validators import DataRequired, Optional, Length, URL
+from wtforms.validators import URL, DataRequired, Optional, Length, Regexp
 
 
 # создаем форму, чтобы пользователь мог самостоятельно создать новый
@@ -20,10 +20,10 @@ class URLMapForm(FlaskForm):
     # хоть какие-то данные, так как поле обязательное
     # валидатор URL, проверяет URL-адрес)
     original_link = URLField(
-        'Введите длинную ссылку',
+        'Длинная ссылка',
         validators=[
             DataRequired(message='Обязательное поле'),
-            URL(require_tld=True, message='Введен некорректный URL')
+            URL(require_tld=True, message='Введена некорректная ссылка')
         ]
     )
 
@@ -37,7 +37,11 @@ class URLMapForm(FlaskForm):
         'Ваш вариант короткой ссылки',
         validators=[
             Length(1, 16),
-            Optional()
+            Optional(),
+            Regexp(
+                regex=r'^[a-zA-Z\d]{1,16}$',
+                message='Недопустимые символы. Допустимы только буквы "a-Z" и цифры "0-9"'
+            )
         ]
     )
 
