@@ -27,4 +27,4 @@ class URLMap(db.Model):
     # при создании экземпляра модели не нужно указывать значение этого поля
     # так как для этого поля по умолчанию указана ссылка на функцию,
     # которая определяет текущее время
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
