@@ -22,8 +22,8 @@ class URLMapForm(FlaskForm):
     original_link = URLField(
         'Длинная ссылка',
         validators=[
-            DataRequired(message='Обязательное поле')
-            # URL(message='Введена некорректная ссылка')
+            DataRequired(message='Обязательное поле'),
+            URL(message='Введена некорректная ссылка')
         ]
     )
 
@@ -38,10 +38,10 @@ class URLMapForm(FlaskForm):
         'Ваш вариант короткой ссылки',
         validators=[
             Length(1, 16),
-            Optional()
-            #Regexp(
-                #regex=r'^[a-zA-Z\d]{1,16}$',
-                #message='Недопустимые символы. Допустимы только буквы "a-Z" и цифры "0-9"')
+            Optional(),
+            Regexp(
+                regex=r'^[a-zA-Z\d]{1,16}$',
+                message='Недопустимые символы. Допустимы только буквы "a-Z" и цифры "0-9"')
         ]
     )
 
