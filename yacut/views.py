@@ -27,7 +27,7 @@ def check_unique_short_id(short_id):
     # в противном случае вернуть False
     # далее эту функцию можно использовать для проверки уникальности
     # короткого идентификатора
-    if URLMap.filter_by(short=short_id).first() is None:
+    if URLMap.query.filter_by(short=short_id).first() is None:
         return True
     return False
 
@@ -42,11 +42,11 @@ def get_unique_short_id():
     """
     Функция генерации уникального короткого идентификатора из 6 символов.
     """
-    unique_short_id = ''.join(random.choice(
+    short_id = ''.join(random.choice(
         ALLOWEED_SYMBOLS) for i in range(LEN_OF_SHORT_ID))
-    if check_unique_short_id(unique_short_id):
-        return unique_short_id
-    return get_unique_short_id
+    if check_unique_short_id(short_id):
+        return short_id
+    return get_unique_short_id()
 
 
 # функция, которая отвечает за отображение главной страницы с формой
@@ -55,8 +55,9 @@ def get_unique_short_id():
 # указываем методы запросов
 @app.route('/', methods=['GET', 'POST'])
 def main_view():
+
     """Функция, которая отвечает за отображение главной страницы."""
-    # создаем экземпляр формы
+    # # создаем экземпляр формы
     form = URLMapForm()
     # проверка на валидность:
     # если при заполнении формы возникли ошибки,
@@ -66,20 +67,20 @@ def main_view():
     # для повторного заполнения
     if not form.validate_on_submit():
         return render_template('main_page.html', form=form)
-    # в переменной short сохраним значение короткого идентификатора ссылки из данных,
-    #  которые пользователь ввел в форму -
-    # так как именно эти данные должны быть проверены далее на уникальность
-    short = form.custom_id.data
-    # если в data нет short, то есть, если пользователь не ввел короткий идентификатор
-    # то нужно сгенерировать уникальный рандомный идентификатор custom_id
-    #  с помощью функции get_unique_short_id
-    if not short:
-        short = get_unique_short_id()
-    elif not check_unique_short_id(short):
+    # # в переменной short сохраним значение короткого идентификатора ссылки из данных,
+    # #  которые пользователь ввел в форму -
+    # # так как именно эти данные должны быть проверены далее на уникальность
+    custom_id = form.custom_id.data
+    # # если в data нет short, то есть, если пользователь не ввел короткий идентификатор
+    # # то нужно сгенерировать уникальный рандомный идентификатор custom_id
+    # #  с помощью функции get_unique_short_id
+    if not custom_id:
+        custom_id = get_unique_short_id()
+    elif not check_unique_short_id(custom_id):
         # выполним проверку на уникальность -
         # если в базе данных уже есть объект URLMap с указанным коротким индентификатором,
         # то вернется флэш-сообщение о том, что поле short не уникально
-        flash('В базе данных уже есть такой короткий идентификатор!')
+        flash(f'Имя идентификатора {custom_id} уже занято!', 'link-taken')
         # и вернем пользователя на главную страницу с формой,
         # чтобы пользователь ввел другой короткий идентификатор
         return render_template('main_page.html', form=form)
@@ -88,17 +89,17 @@ def main_view():
     # то создаем этот экземпляр модели в БД,
     url_map = URLMap(
         original=form.original_link.data,
-        short=form.custom_id.data
+        short=custom_id
     )
     # сохраняем и комитим посредством сессии
     db.session.add(url_map)
     db.session.commit()
-    return render_template('main.html', url=url_map, form=form)
+    return render_template('main_page.html', form=form)
 
 
 @app.route('/<short_id>')
 def follow_link(short_id):
     """Функция, которая отвечает за переадресацию."""
-    object_in_db = URLMap.filter_by(short=short_id).first()
+    object_in_db = URLMap.query.filter_by(short=short_id).first_or_404()
     original_link = object_in_db.original
     return redirect(original_link)
