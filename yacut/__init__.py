@@ -12,6 +12,8 @@
 # для создания приложения
 from flask import Flask
 
+from flask_migrate import Migrate
+
 # импортируется нужный класс для работы с ORM
 from flask_sqlalchemy import SQLAlchemy
 
@@ -35,6 +37,8 @@ app.config.from_object(Config)
 # в качестве параметра экземпляр приложения Flask
 db = SQLAlchemy(app)
 
+migrate = Migrate(app, db)
+
 # остальные импорты модулей укажем в конце файла,
 # так как они будут созданы уже на базе созданного экземпляра приложения
-from . import error_handlers, views, models
+from . import error_handlers, views, forms, models
