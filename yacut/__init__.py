@@ -6,39 +6,22 @@
 # 2. создание экземпляра класса Flask - экземпляра приложения
 # 3. создание экземпляра БД
 
-# для начала все необходимые импорты:
-
-# из модуля flask импортируем класс Flask -
-# для создания приложения
 from flask import Flask
 
 from flask_migrate import Migrate
 
-# импортируется нужный класс для работы с ORM
 from flask_sqlalchemy import SQLAlchemy
 
-# импортируем из конфигурационного файла класс с настройками -
-# набором конфигурационных ключей
 from settings import Config
 
 
-# создаем объект приложения - экземпляр класса Flask
-# единственный аргумент - это имя текущего модуля или пакета(yacut)
 app = Flask(__name__)
 
-# у каждого приложения Flask есть набор настроек
-# это набор определенных ключей конфигурации
-#  все эти ключи хранятся в отдельном файле с настройками
-# - settings.py в классе настроек Config
 app.config.from_object(Config)
 
-
-# создаем экземпляр класса SQLAlchemy и передаем
-# в качестве параметра экземпляр приложения Flask
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
 
-# остальные импорты модулей укажем в конце файла,
-# так как они будут созданы уже на базе созданного экземпляра приложения
-from . import error_handlers, views, forms, models
+
+from . import api_views, error_handlers, views, forms, models
