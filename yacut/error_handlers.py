@@ -1,6 +1,33 @@
-from flask import render_template
-
+from flask import render_template, jsonify
 from . import app, db
+
+
+# создаем кастомный класс исключения для того, чтобы
+# реализовать для АПИ возможность возвращать при одном и том же коде
+# ошибки разные сообщения
+class InvalidAPIUsage(Exception):
+    # если статус-код ответа АПИ не указан, то вернется код 400
+    status_code = 400
+    # конструктор класса принимает на вход текст сообщения
+    # и статус-код ошибки(необязательно)
+
+    def __init__(self, message, status_code=None):
+        super().__init__()
+        self.message = message
+        # если статус-код ответа передан в инструктор
+        # то этот код вернется в ответе
+        if status_code is not None:
+            self.status_code = status_code
+
+    # для подготовки JSON-ответа используем метод to dict,
+    # который будет сериализовать сообщения
+    def to_dict(self):
+        return dict(message=self.message)
+
+# обработчик для исключения InvalidAPIUsage
+@app.errorhandler(InvalidAPIUsage)
+def invalid_api_usage(error):
+    return jsonify(error.to_dict()), error.status_code
 
 
 # добавим новую функцию, которая будет обрабатывать
