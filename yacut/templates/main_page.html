@@ -63,7 +63,7 @@
             <p class="text-center">
               {% if url %}
                 <h5 class="text-center">
-                  Ваша новая ссылка готова: </br>
+                  Ваша новая ссылка готова:
                   <a href="{{ url_for('follow_link', short_id=url.short, _external=True) }}">{{ url_for('follow_link', short_id=url.short, _external=True) }}</a>
                 </h5>
               {% endif %}
