@@ -19,7 +19,7 @@ def get_url(short_id):
 
     url_map_obj = URLMap.query.filter_by(short=short_id).first()
     if url_map_obj is None:
-        raise InvalidAPIUsage('В базе данных нет такой ссылки', 404)
+        raise InvalidAPIUsage('Указанный id не найден', 404)
     original_link = url_map_obj.original
     return jsonify({'url': original_link}), 200
 
@@ -32,17 +32,17 @@ def add_url():
 
     data = request.get_json()
     if not data:
-        raise InvalidAPIUsage("Отсутствую данные в теле запроса.")
+        raise InvalidAPIUsage("Отсутствует тело запроса")
     if 'url' not in data:
-        raise InvalidAPIUsage("Отсутствует обязательная оригинальная ссылка в теле запроса.")
+        raise InvalidAPIUsage('\"url\" является обязательным полем!')
     if 'custom_id' in data:
         custom_id = data.get('custom_id')
         if not check_unique_short_id(custom_id):
-            raise InvalidAPIUsage(f'Имя короткой ссылки "{custom_id}" уже занято.')
+            raise InvalidAPIUsage(f'Имя "{custom_id}" уже занято.')
         if custom_id == "" or custom_id is None:
             data['custom_id'] = get_unique_short_id()
         elif not re.match(LINK_PATTERN, custom_id):
-            raise InvalidAPIUsage('Недопустимое имя для короткой ссылки')
+            raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
     else:
         data['custom_id'] = get_unique_short_id()
 

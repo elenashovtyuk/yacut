@@ -30,7 +30,7 @@ def get_unique_short_id():
         ALLOWEED_SYMBOLS) for i in range(LEN_OF_SHORT_ID))
     if check_unique_short_id(short_id):
         return short_id
-    return get_unique_short_id()
+    return get_unique_short_id(), 201
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -46,7 +46,7 @@ def main_view():
     if not custom_id:
         custom_id = get_unique_short_id()
     elif not check_unique_short_id(custom_id):
-        flash(f'Имя идентификатора {custom_id} уже занято!', 'link-taken')
+        flash(f'Имя {custom_id} уже занято!', 'link-taken')
         return render_template('main_page.html', form=form)
     url_map = URLMap(
         original=form.original_link.data,
