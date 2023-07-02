@@ -54,7 +54,7 @@ def main_view():
     )
     db.session.add(url_map)
     db.session.commit()
-    return render_template('main_page.html', form=form)
+    return render_template('main_page.html', url=url_map, form=form)
 
 
 @app.route('/<short_id>')
