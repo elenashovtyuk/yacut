@@ -18,7 +18,7 @@ class URLMap(db.Model):
         """Метод-сериализатор."""
         return dict(
             url=self.original,
-            custom_id=url_for(
+            short_link=url_for(
                 'main_view', _external=True) + self.short
         )
 
