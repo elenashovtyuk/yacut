@@ -1,14 +1,11 @@
 import random
-import string
 
 from flask import flash, redirect, render_template
 
 from . import app, db
 from .forms import URLMapForm
 from .models import URLMap
-
-ALLOWEED_SYMBOLS = string.ascii_letters + string.digits
-LEN_OF_SHORT_ID = 6
+from .constants import ALLOWEED_SYMBOLS, LEN_OF_SHORT_ID
 
 
 def check_unique_short_id(short_id):
