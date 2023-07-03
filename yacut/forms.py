@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import URL, DataRequired, Length, Optional, Regexp
+from .constants import LINK_PATTERN
 
 
 class URLMapForm(FlaskForm):
@@ -19,7 +20,7 @@ class URLMapForm(FlaskForm):
             Length(1, 16),
             Optional(),
             Regexp(
-                regex=r'^[a-zA-Z\d]{1,16}$',
+                regex=LINK_PATTERN,
                 message='Недопустимые символы. Допустимы только буквы "a-Z" и цифры "0-9"')
         ]
     )
