@@ -1,10 +1,9 @@
 from datetime import datetime
-
+from urllib.parse import urljoin
 from flask import url_for
 
 from . import db
-
-FIELDS = {'original': 'url', 'short': 'custom_id'}
+from .constants import FIELDS
 
 
 class URLMap(db.Model):
@@ -18,8 +17,8 @@ class URLMap(db.Model):
         """Метод-сериализатор."""
         return dict(
             url=self.original,
-            short_link=url_for(
-                'main_view', _external=True) + self.short
+            short_link=urljoin(
+                url_for('main_view', _external=True), self.short)
         )
 
     def from_dict(self, data):
